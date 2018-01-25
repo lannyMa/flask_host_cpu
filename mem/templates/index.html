@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/4.0.2/echarts.min.js"></script>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 600px;height:400px;"></div>
+<script type="text/javascript">
+    var last_time;
+    // 基于准备好的dom，初始化echarts实例
+    $.getJSON('/getdata', function (res) {
+        var myChart = echarts.init(document.getElementById('main'));
+        var data = res.data;
+        last_time = res.max_time;
+        option = {
+            title: {
+                text: '动态数据 + 时间坐标轴'
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                    params = params[0];
+                    var date = new Date(params.name);
+                    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1];
+                },
+                axisPointer: {
+                    animation: false
+                }
+            },
+            xAxis: {
+                type: 'time',
+                splitLine: {
+                    show: false
+                }
+            },
+            yAxis: {
+                type: 'value',
+                boundaryGap: [0, '100%'],
+                splitLine: {
+                    show: false
+                }
+            },
+            series: [{
+                name: '模拟数据',
+                type: 'line',
+                showSymbol: false,
+                hoverAnimation: false,
+                data: data
+            }]
+        };
+
+        setInterval(function (new_res) {
+            $.getJSON('/getdata?lasttime=' + last_time, function (new_res) {
+                $.each(new_res.data, function (i, v) {
+                    data.push(v);
+                });
+                myChart.setOption({
+                    series: [{
+                        data: data
+                    }]
+                });
+            });
+            // for (var i = 0; i < 5; i++) {
+            //     data.shift();
+            //     data.push(randomData());
+            // }
+
+
+        }, 1000);
+
+        myChart.setOption(option);
+    });
+
+</script>
+</body>
+</html>

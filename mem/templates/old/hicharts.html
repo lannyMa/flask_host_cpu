@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="https://static.jianshukeji.com/highcharts/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .highcharts-axis-resizer {
+            stroke: #eee;
+        }
+
+        .highcharts-axis-resizer:hover {
+            stroke: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<!--<div id="container" style="min-width:400px;height:400px"></div>-->
+
+
+<!--<script src="https://img.hcharts.cn/jquery/jquery-1.8.3.min.js"></script>-->
+<!--<script src="https://img.hcharts.cn/highstock/highstock.js"></script>-->
+<!--<script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script>-->
+<!--<script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>-->
+
+<div id="container" style="height: 400px; min-width: 310px"></div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+<script type="text/javascript">
+     Highcharts.setOptions({ global: { useUTC: false } });
+</script>
+
+<script>
+
+    $.getJSON('/getdata', function (data) {
+        // Create the chart
+        Highcharts.stockChart('container', {
+
+
+            rangeSelector: {
+                selected: 1
+            },
+
+            title: {
+                text: 'AAPL Stock Price'
+            },
+
+            series: [{
+                name: 'AAPL',
+                data: data,
+                tooltip: {
+                    valueDecimals: 2
+                }
+            }]
+        });
+    });
+</script>
+</body>
+</html>
